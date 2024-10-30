@@ -1,3 +1,16 @@
 export default function HomeFooterButton() {
-    return <div></div>;
+    return (
+        <footer className="fixed bottom-5 right-5">
+            <div>
+                <input
+                    className="border-4 border-blue-500 px-2 py-1"
+                    type="text"
+                    placeholder="checkbox number"
+                />
+                <button className="first-letter:uppercase bg-blue-500 text-white px-2 py-2">
+                    jump!
+                </button>
+            </div>
+        </footer>
+    );
 }

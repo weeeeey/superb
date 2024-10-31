@@ -29,12 +29,14 @@ export default function HomePage() {
             yellow: 0,
         },
     });
+
     const handleClick = (isCheck: boolean, color?: ColorType) => {
         setCheckState((p) => ({
             ...p,
             checkedCount: isCheck ? p.checkedCount + 1 : p.checkedCount - 1,
         }));
         if (color) {
+            console.log(color);
             setCheckState((p) => ({
                 ...p,
                 colorCheckedCount: {

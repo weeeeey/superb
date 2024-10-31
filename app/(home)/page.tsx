@@ -29,10 +29,27 @@ export default function HomePage() {
             yellow: 0,
         },
     });
+    const handleClick = (isCheck: boolean, color?: ColorType) => {
+        setCheckState((p) => ({
+            ...p,
+            checkedCount: isCheck ? p.checkedCount + 1 : p.checkedCount - 1,
+        }));
+        if (color) {
+            setCheckState((p) => ({
+                ...p,
+                colorCheckedCount: {
+                    ...p.colorCheckedCount,
+                    [color]: isCheck
+                        ? p.colorCheckedCount[color] + 1
+                        : p.colorCheckedCount[color] - 1,
+                },
+            }));
+        }
+    };
     return (
         <>
             <HomeHeader checkState={checkState} />
-            <HomeMain />
+            <HomeMain handleClick={handleClick} />
             <HomeFooterButton />
         </>
     );

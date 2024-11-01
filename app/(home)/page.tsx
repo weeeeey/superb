@@ -1,9 +1,10 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { HomeFooterButton, HomeHeader, HomeMain } from './_components';
 import { GREEN, PURPLE, RED, YELLOW } from '@/constants';
 
 export type CheckStateType = {
+    checkedIdxs: number[];
     checkedCount: number;
     colorCheckedCount: {
         [GREEN]: number;
@@ -20,7 +21,10 @@ export type ColorType =
     | typeof YELLOW;
 
 export default function HomePage() {
+    const [mount, setMount] = useState(false);
+    const [jumpToTarget, setJumpToTarget] = useState(-1);
     const [checkState, setCheckState] = useState<CheckStateType>({
+        checkedIdxs: [],
         checkedCount: 0,
         colorCheckedCount: {
             green: 0,
@@ -30,13 +34,28 @@ export default function HomePage() {
         },
     });
 
-    const handleClick = (isCheck: boolean, color?: ColorType) => {
-        setCheckState((p) => ({
-            ...p,
-            checkedCount: isCheck ? p.checkedCount + 1 : p.checkedCount - 1,
-        }));
+    useEffect(() => {
+        setMount(true);
+    }, []);
+
+    const handleClick = (
+        isCheck: boolean,
+        idx: number,
+        color: ColorType | undefined
+    ) => {
+        if (isCheck)
+            setCheckState((p) => ({
+                ...p,
+                checkedCount: p.checkedCount + 1,
+                checkedIdxs: [...p.checkedIdxs, idx],
+            }));
+        else
+            setCheckState((p) => ({
+                ...p,
+                checkedCount: p.checkedCount - 1,
+                checkedIdxs: p.checkedIdxs.filter((id) => id !== idx),
+            }));
         if (color) {
-            console.log(color);
             setCheckState((p) => ({
                 ...p,
                 colorCheckedCount: {
@@ -48,11 +67,28 @@ export default function HomePage() {
             }));
         }
     };
+
+    const selectTarget = (inputValue: string) => {
+        const targetNumber = Number(inputValue);
+        if (isNaN(targetNumber)) return;
+        if (targetNumber < 0) return;
+        if (targetNumber > 1_000_000) return;
+        if (targetNumber !== Math.floor(targetNumber)) return;
+
+        setJumpToTarget(targetNumber);
+    };
+
+    if (!mount) return;
+
     return (
         <>
             <HomeHeader checkState={checkState} />
-            <HomeMain handleClick={handleClick} />
-            <HomeFooterButton />
+            <HomeMain
+                jumpToTarget={jumpToTarget}
+                handleClick={handleClick}
+                checkedIdxs={checkState.checkedIdxs}
+            />
+            <HomeFooterButton selectTarget={selectTarget} />
         </>
     );
 }

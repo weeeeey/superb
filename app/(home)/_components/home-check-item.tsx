@@ -1,6 +1,7 @@
 import { GridChildComponentProps } from 'react-window';
 import { ColorType } from '../page';
 import { GREEN, PURPLE, RED, YELLOW } from '@/constants';
+import { useMemo, useRef } from 'react';
 
 const getColor = (idx: number): ColorType | undefined => {
     if (idx % 90 === 0) return YELLOW;
@@ -22,7 +23,6 @@ interface CheckItemProps extends GridChildComponentProps {
     data: {
         checkedIdxs: number[];
         columnCount: number;
-        jumpToTarget: number;
         handleClick: (
             isCheck: boolean,
             idx: number,
@@ -38,7 +38,11 @@ export default function CheckItem({
     data,
 }: CheckItemProps) {
     const { columnCount, handleClick, checkedIdxs } = data;
-    const idx = rowIndex * columnCount + columnIndex;
+    const divRef = useRef<HTMLDivElement>(null);
+
+    const idx = useMemo(() => {
+        return rowIndex * columnCount + columnIndex;
+    }, [rowIndex, columnCount, columnIndex]);
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const isChecked = e.target.checked;
@@ -47,7 +51,11 @@ export default function CheckItem({
     };
 
     return (
-        <div style={style} className="flex items-center justify-center">
+        <div
+            ref={divRef}
+            style={style}
+            className="flex items-center justify-center"
+        >
             <input
                 className="hidden peer"
                 type="checkbox"
@@ -56,11 +64,13 @@ export default function CheckItem({
                 checked={checkedIdxs.some((id) => id === idx)}
             />
             <label
-                className={`border-2 rounded-md size-4 peer-checked:bg-red-500  cursor-pointer hover:bg-gray-100
+                className={`border-2 rounded-md size-full peer-checked:bg-red-500  cursor-pointer hover:bg-gray-100 
                     ${getBorderColor(idx)}`}
                 htmlFor={`checkbox-${idx}`}
                 title={`Item #${idx + 1}`}
-            />
+            >
+                {idx}
+            </label>
         </div>
     );
 }

@@ -1,5 +1,5 @@
 import { ColorType } from '../page';
-import { memo } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import { FixedSizeGrid } from 'react-window';
 import CheckItem from './home-check-item';
 
@@ -7,7 +7,7 @@ const TOTAL_ITEMS = 1_000_000;
 const ITEM_SIZE = 40;
 const GAP_SIZE = 4;
 
-const config = { columns: 20, width: 800 };
+const config = { columns: 20, width: 1000 };
 const rowCount = Math.ceil(TOTAL_ITEMS / config.columns);
 interface HomeMainProps {
     jumpToTarget: number;
@@ -21,10 +21,23 @@ interface HomeMainProps {
 
 const HomeMain = memo(
     ({ handleClick, checkedIdxs, jumpToTarget }: HomeMainProps) => {
+        const gridRef = useRef<FixedSizeGrid>(null);
+
+        useEffect(() => {
+            if (jumpToTarget >= 0 && gridRef.current) {
+                const rowIndex = Math.floor(jumpToTarget / config.columns);
+
+                gridRef.current.scrollTo({
+                    scrollTop: rowIndex * 44 - 320,
+                });
+            }
+        }, [jumpToTarget]);
+
         return (
             <main className="h-full pt-20 px-4 sm:px-6 md:px-8 lg:px-10 xl:px-20">
                 <section className="h-full overflow-hidden">
                     <FixedSizeGrid
+                        ref={gridRef}
                         columnCount={config.columns}
                         columnWidth={ITEM_SIZE + GAP_SIZE}
                         height={window.innerHeight - 80}
@@ -35,7 +48,6 @@ const HomeMain = memo(
                             columnCount: config.columns,
                             checkedIdxs,
                             handleClick,
-                            jumpToTarget,
                         }}
                         className="mx-auto bg-slate-200"
                     >

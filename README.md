@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
 ## Getting Started
 
-First, run the development server:
+해당 프로젝트의 동작을 확인하기 위하여 모듈 설치 및 로컬 서버를 실행시켜주세요.
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+[http://localhost:3000](http://localhost:3000)에 접근합니다.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 프로젝트 개요
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+-   1,000,000개의 체크박스를 성능 저하 없이 그리드 형태로 렌더링하는 컴포넌트를 구현
 
-## Learn More
+## 요구사항
 
-To learn more about Next.js, take a look at the following resources:
+-   1,000,000개의 체크박스 그리드 렌더링
+    -   체크박스는 브라우저의 가로 크기에 맞춰 그리드 형태로 렌더링
+    -   브라우저의 크기에 따라 자동으로 조정되어야 한다.
+    -   가능한 많은 체크박스가 화면에 표시되어야 한다.
+-   체크 된 박스의 전체 및 색상 별 갯수를 실시간으로 화면에 표시
+-   화면 하단에 체크박스의 인덱스를 입력 후 Jump 버튼을 클릭시 해당 인덱스로 스크롤 되어야한다.
+-   성능 저하 없이 체크박스의 선택/해제 애니메이션을 구현한다.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 문제 해결방안
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+-   채크 박스의 갯수가 10,000개가 넘어간다면 초기 렌더링 시 브라우저 멈춤 현상이 발생
+-   해당 문제를 해결하기 위해 처음에 생각한 것은 intersection observer를 활용
+    -   체크 박스를 1,000개씩 묶어 각 섹션을 선언.
+    -   선언 된 천개의 섹션에 대해 observer를 통해 실시간 감지를 하여 inView일시 렌더링 되도록 구현
+    -   ------해당 과정의 문제점-----
+-   lazy loading의 한계를 극복하기 위해 windowing 기법을 사용
+-   [윈도우잉 기법]
+    -   화면에 보이는 데이터만 렌더링하는 기법으로 lazy loading 기법과 목적 같음
+    -   스크롤 시 새로운 데이터를 동적으로 렌더링
+    -   이를 통해 성능 향상, 메모리 사용 감소, 사용자 경험 향상을 기대할 수 있음
 
-## Deploy on Vercel
+## 동작 원리
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+-   하나의 state를 선언하여 전체의 체크박스를 관리
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+    ```javascript
+    export type CheckStateType = {
+        checkedIdxs: number[];
+        checkedCount: number;
+        colorCheckedCount: {
+            [GREEN]: number;
+            [PURPLE]: number;
+            [RED]: number;
+            [YELLOW]: number;
+        };
+    };
+    ```
+
+    -   checkedIdxs
+        -   windowing 기법을 통해 화면에 보이는 부분만 렌더링한다면 스크롤에서 벗어난 부분에 다시 접근했을 시 체크박스는 리렌더링 되어 이전 체크를 기억하지 못했다.
+        -   이를 해결하기 위해 checkedIdxs 상태를 선언하여 전체 체크 된 박스를 기억
+    -   checkedCount
+        -   체크 되어 있는 체크박스의 갯수
+    -   colorCheckedCount
+        -   색상 별 박스 중 체크 된 박스의 갯수
+
+-   윈도우잉 기법
+    -   react-window 라이브러리를 통해 구현

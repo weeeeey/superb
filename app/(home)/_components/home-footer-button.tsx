@@ -11,8 +11,8 @@ export default function HomeFooterButton({
     selectTarget(inputValue);
   };
   return (
-    <footer className="min-x-[360px] fixed bottom-5 right-5 flex justify-end">
-      <form onSubmit={handleSubmit}>
+    <footer className="min-x-[360px] fixed bottom-5 right-5">
+      <form className="flex items-center" onSubmit={handleSubmit}>
         <input
           className="border-4 border-blue-500 px-2 py-1"
           type="text"

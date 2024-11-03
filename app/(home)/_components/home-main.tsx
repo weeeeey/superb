@@ -3,7 +3,7 @@ import { memo, useEffect, useRef, useState } from "react";
 import { FixedSizeGrid } from "react-window";
 import CheckItem from "./home-check-item";
 
-const TOTAL_ITEMS = 1_000_000;
+export const TOTAL_ITEMS = 1_000_000;
 const ITEM_SIZE = 40;
 const GAP_SIZE = 4;
 
@@ -40,7 +40,7 @@ const HomeMain = memo(
         const rowIndex = Math.floor(jumpToTarget / config.columns);
 
         gridRef.current.scrollTo({
-          scrollTop: rowIndex * 44 - 320,
+          scrollTop: rowIndex * (ITEM_SIZE + GAP_SIZE) - 320,
         });
       }
     }, [jumpToTarget, config.columns]);

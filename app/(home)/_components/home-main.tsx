@@ -1,5 +1,5 @@
 import { ColorType } from "../page";
-import { memo, useEffect, useRef } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { FixedSizeGrid } from "react-window";
 import CheckItem from "./home-check-item";
 
@@ -7,8 +7,6 @@ const TOTAL_ITEMS = 1_000_000;
 const ITEM_SIZE = 40;
 const GAP_SIZE = 4;
 
-const config = { columns: 20, width: 1000 };
-const rowCount = Math.ceil(TOTAL_ITEMS / config.columns);
 interface HomeMainProps {
   jumpToTarget: number;
   checkedIdxs: number[];
@@ -19,9 +17,22 @@ interface HomeMainProps {
   ) => void;
 }
 
+type ConfigType = {
+  columns: number;
+  width: number;
+};
+
+const getColums = (width: number) => Math.floor(width / (ITEM_SIZE + GAP_SIZE));
+
 const HomeMain = memo(
   ({ handleClick, checkedIdxs, jumpToTarget }: HomeMainProps) => {
     const gridRef = useRef<FixedSizeGrid>(null);
+    const [config, setConfig] = useState<ConfigType>({
+      columns: getColums(window.innerWidth),
+      width: window.innerWidth,
+    });
+
+    const rowCount = Math.ceil(TOTAL_ITEMS / config.columns);
 
     useEffect(() => {
       if (jumpToTarget >= 0 && gridRef.current) {
@@ -31,11 +42,27 @@ const HomeMain = memo(
           scrollTop: rowIndex * 44 - 320,
         });
       }
-    }, [jumpToTarget]);
+    }, [jumpToTarget, config.columns]);
+
+    useEffect(() => {
+      const handleResize = () => {
+        const count = getColums(window.innerWidth);
+        if (count === config.columns) return;
+        else
+          setConfig({
+            columns: count,
+            width: window.innerWidth,
+          });
+      };
+
+      window.addEventListener("resize", handleResize);
+
+      return () => window.removeEventListener("resize", handleResize);
+    }, [config.columns]);
 
     return (
-      <main className="h-full px-4 pt-20 sm:px-6 md:px-8 lg:px-10 xl:px-20">
-        <section className="h-full overflow-hidden">
+      <main className="h-full pt-20">
+        <section className="h-full bg-slate-200">
           <FixedSizeGrid
             ref={gridRef}
             columnCount={config.columns}
@@ -46,10 +73,10 @@ const HomeMain = memo(
             width={config.width}
             itemData={{
               columnCount: config.columns,
+              jumpToTarget,
               checkedIdxs,
               handleClick,
             }}
-            className="mx-auto bg-slate-200"
           >
             {CheckItem}
           </FixedSizeGrid>

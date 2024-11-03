@@ -22,6 +22,7 @@ const getBorderColor = (idx: number): string => {
 interface CheckItemProps extends GridChildComponentProps {
   data: {
     checkedIdxs: number[];
+    jumpToTarget: number;
     columnCount: number;
     handleClick: (
       isCheck: boolean,
@@ -37,7 +38,7 @@ export default function CheckItem({
   style,
   data,
 }: CheckItemProps) {
-  const { columnCount, handleClick, checkedIdxs } = data;
+  const { columnCount, handleClick, checkedIdxs, jumpToTarget } = data;
   const divRef = useRef<HTMLDivElement>(null);
 
   const idx = useMemo(() => {
@@ -60,7 +61,11 @@ export default function CheckItem({
         checked={checkedIdxs.some((id) => id === idx)}
       />
       <label htmlFor={`checkbox-${idx}`} title={`checkbox ${idx}`}>
-        <span className={`${getBorderColor(idx)} border-2`} />
+        <span
+          className={`truncate ${getBorderColor(idx)} border-2 ${jumpToTarget === idx && "ring-2 ring-blue-500 ring-offset-2"}`}
+        >
+          {idx}
+        </span>
       </label>
     </div>
   );

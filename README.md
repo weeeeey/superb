@@ -1,4 +1,4 @@
-[https://github.com/weeeeey/superb](깃허브) 주소입니다.
+[깃허브 저장소](https://github.com/weeeeey/superb) 주소입니다.
 
 ## Getting Started
 

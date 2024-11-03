@@ -2,6 +2,7 @@ import { GridChildComponentProps } from "react-window";
 import { ColorType } from "../page";
 import { GREEN, PURPLE, RED, YELLOW } from "@/constants";
 import { useMemo, useRef } from "react";
+import { TOTAL_ITEMS } from "./home-main";
 
 const getColor = (idx: number): ColorType | undefined => {
   if (idx % 25 === 0) return YELLOW;
@@ -53,6 +54,7 @@ export default function CheckItem({
     handleClick(isChecked, idx, color);
   };
 
+  if (idx > TOTAL_ITEMS) return null;
   return (
     <div ref={divRef} style={style}>
       <input
@@ -64,7 +66,7 @@ export default function CheckItem({
       />
       <label htmlFor={`checkbox-${idx}`} title={`checkbox ${idx}`}>
         <span
-          className={` ${getBorderColor(idx)} border-2 ${jumpToTarget === idx && "ring-2 ring-blue-500 ring-offset-2"}`}
+          className={`truncate border-2 ${getBorderColor(idx)} ${jumpToTarget === idx && "ring-4 ring-blue-500 ring-offset-2"}`}
         >
           <span className={isShowIndex ? "opacity-100" : "opacity-0"}>
             {idx}

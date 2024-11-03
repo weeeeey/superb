@@ -3,7 +3,7 @@ import { memo, useEffect, useRef, useState } from "react";
 import { FixedSizeGrid } from "react-window";
 import CheckItem from "./home-check-item";
 
-const TOTAL_ITEMS = 1_000_000;
+export const TOTAL_ITEMS = 1_000_000;
 const ITEM_SIZE = 40;
 const GAP_SIZE = 4;
 

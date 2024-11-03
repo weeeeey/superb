@@ -64,7 +64,7 @@ export default function CheckItem({
       />
       <label htmlFor={`checkbox-${idx}`} title={`checkbox ${idx}`}>
         <span
-          className={`truncate ${getBorderColor(idx)} border-2 ${jumpToTarget === idx && "ring-2 ring-blue-500 ring-offset-2"}`}
+          className={` ${getBorderColor(idx)} border-2 ${jumpToTarget === idx && "ring-2 ring-blue-500 ring-offset-2"}`}
         >
           <span className={isShowIndex ? "opacity-100" : "opacity-0"}>
             {idx}

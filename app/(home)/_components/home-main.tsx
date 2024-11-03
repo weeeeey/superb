@@ -40,7 +40,7 @@ const HomeMain = memo(
         const rowIndex = Math.floor(jumpToTarget / config.columns);
 
         gridRef.current.scrollTo({
-          scrollTop: rowIndex * 44 - 320,
+          scrollTop: rowIndex * (ITEM_SIZE + GAP_SIZE) - 320,
         });
       }
     }, [jumpToTarget, config.columns]);

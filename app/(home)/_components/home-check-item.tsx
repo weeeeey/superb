@@ -24,6 +24,7 @@ interface CheckItemProps extends GridChildComponentProps {
     checkedIdxs: number[];
     jumpToTarget: number;
     columnCount: number;
+    isShowIndex: boolean;
     handleClick: (
       isCheck: boolean,
       idx: number,
@@ -38,7 +39,8 @@ export default function CheckItem({
   style,
   data,
 }: CheckItemProps) {
-  const { columnCount, handleClick, checkedIdxs, jumpToTarget } = data;
+  const { columnCount, handleClick, checkedIdxs, jumpToTarget, isShowIndex } =
+    data;
   const divRef = useRef<HTMLDivElement>(null);
 
   const idx = useMemo(() => {
@@ -64,7 +66,7 @@ export default function CheckItem({
         <span
           className={`truncate ${getBorderColor(idx)} border-2 ${jumpToTarget === idx && "ring-2 ring-blue-500 ring-offset-2"}`}
         >
-          {idx}
+          {isShowIndex && idx}
         </span>
       </label>
     </div>

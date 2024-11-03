@@ -33,6 +33,7 @@ export default function HomePage() {
       yellow: 0,
     },
   });
+  const [isShowIndex, setIsShowIndex] = useState(false);
 
   useEffect(() => {
     setMount(true);
@@ -78,6 +79,8 @@ export default function HomePage() {
     setJumpToTarget(targetNumber);
   };
 
+  const handleShowIndex = () => setIsShowIndex((p) => !p);
+
   if (!mount) return;
 
   return (
@@ -87,8 +90,12 @@ export default function HomePage() {
         jumpToTarget={jumpToTarget}
         handleClick={handleClick}
         checkedIdxs={checkState.checkedIdxs}
+        isShowIndex={isShowIndex}
       />
-      <HomeFooterButton selectTarget={selectTarget} />
+      <HomeFooterButton
+        selectTarget={selectTarget}
+        handleShowIndex={handleShowIndex}
+      />
     </>
   );
 }

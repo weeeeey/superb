@@ -8,6 +8,7 @@ const ITEM_SIZE = 40;
 const GAP_SIZE = 4;
 
 interface HomeMainProps {
+  isShowIndex: boolean;
   jumpToTarget: number;
   checkedIdxs: number[];
   handleClick: (
@@ -25,7 +26,7 @@ type ConfigType = {
 const getColums = (width: number) => Math.floor(width / (ITEM_SIZE + GAP_SIZE));
 
 const HomeMain = memo(
-  ({ handleClick, checkedIdxs, jumpToTarget }: HomeMainProps) => {
+  ({ handleClick, checkedIdxs, jumpToTarget, isShowIndex }: HomeMainProps) => {
     const gridRef = useRef<FixedSizeGrid>(null);
     const [config, setConfig] = useState<ConfigType>({
       columns: getColums(window.innerWidth),
@@ -73,6 +74,7 @@ const HomeMain = memo(
             width={config.width}
             itemData={{
               columnCount: config.columns,
+              isShowIndex,
               jumpToTarget,
               checkedIdxs,
               handleClick,

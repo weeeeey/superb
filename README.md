@@ -1,4 +1,4 @@
-[https://github.com/weeeeey/superb] github repo 주소입니다.
+[https://github.com/weeeeey/superb](github repo) 주소입니다.
 
 ## Getting Started
 
